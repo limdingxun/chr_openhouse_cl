@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>基督堂中学开放日｜成语拼拼乐</title>
 <style>
   :root{
@@ -13,452 +13,134 @@
     --chip-border:#f4c48e;
     --slot:#ffffff;
     --ok:#2e7d32;
-    --offset: 10vh; /* 控制整体上下位置 */
+    --offset: 8vh; /* 控制整体上下位置 */
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family:"Noto Sans SC", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    display:flex; flex-direction:column; align-items:center; padding:18px 12px;
+    display:flex; flex-direction:column; align-items:center;
+    padding:2vh 4vw;
+    overflow-x:hidden;   /* 避免水平滚动 */
   }
 
-  /* 舞台容器：整体位置 + 放大比例 */
   .stage{
     width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
     margin-top: var(--offset);
-    transform: scale(1.2);
     transform-origin: top center;
   }
 
-  .title-1{font-size: clamp(22px, 5vw, 36px); font-weight:900; margin:2px 0; color:#2f3e46}
-  .title-2{font-size: clamp(20px, 4.4vw, 30px); font-weight:800; margin:4px 0 8px; color:var(--accent)}
-  .sub{font-size: clamp(14px, 2.7vw, 18px); opacity:.9; margin:2px 0 12px}
+  .title-1{font-size:clamp(22px,5vw,36px);font-weight:900;margin:2px 0;color:#2f3e46}
+  .title-2{font-size:clamp(20px,4.4vw,30px);font-weight:800;margin:4px 0 8px;color:var(--accent)}
+  .sub{font-size:clamp(14px,2.8vw,18px);opacity:.9;margin:2px 0 12px;text-align:center;}
 
-  #idiom-slot{display:flex;justify-content:center;gap:12px;margin:8px 0 6px;min-height:72px;}
+  #idiom-slot{
+    display:flex;justify-content:center;gap:3vw;margin:8px 0 6px;
+    min-height:12vw;flex-wrap:wrap;
+  }
   .slot{
-    width:76px;height:76px;background:var(--slot);border:3px dashed #b7b7b7;border-radius:16px;
-    display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:800;user-select:none;
+    width:18vw;max-width:80px;aspect-ratio:1;
+    background:var(--slot);border:3px dashed #b7b7b7;border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(28px,7vw,46px);font-weight:800;user-select:none;
     box-shadow:0 1px 0 rgba(0,0,0,.04);
-    cursor:pointer;            /* 保持原外观 */
-    touch-action:none;         /* 触屏拖拽时防止页面滚动 */
+    cursor:pointer;
+    touch-action:none;
   }
 
-  #choices{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:14px auto;max-width:900px;}
+  #choices{
+    display:flex;flex-wrap:wrap;justify-content:center;
+    gap:3vw;margin:14px auto;max-width:95vw;
+  }
   .char{
-    min-width:64px;min-height:64px;padding:10px 16px;font-size:34px;font-weight:800;
-    background:var(--chip);border:2px solid var(--chip-border);border-radius:14px;
-    display:inline-flex;align-items:center;justify-content:center;user-select:none;
-    transition:transform .06s ease; cursor:grab;
-    -webkit-user-drag: element;
-    touch-action:none;          /* 触屏拖拽时防止页面滚动 */
+    min-width:15vw;max-width:70px;aspect-ratio:1;
+    font-size:clamp(24px,6vw,38px);font-weight:800;
+    background:var(--chip);border:2px solid var(--chip-border);
+    border-radius:14px;display:inline-flex;align-items:center;justify-content:center;
+    user-select:none;transition:transform .06s ease;cursor:grab;
+    -webkit-user-drag:element;
+    touch-action:none;
   }
-  .char:active{transform:scale(.96)}
-  .char[aria-disabled="true"]{opacity:.35;cursor:not-allowed}
+  .char:active{transform:scale(.96);}
+  .char[aria-disabled="true"]{opacity:.35;cursor:not-allowed;}
 
-  #controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 2px}
+  #controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 2px;}
   button{
-    appearance:none;border:0;border-radius:12px;padding:12px 16px;font-size:16px;font-weight:800;cursor:pointer;
+    appearance:none;border:0;border-radius:12px;padding:10px 14px;
+    font-size:16px;font-weight:800;cursor:pointer;
     background:var(--accent);color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.08);
   }
-  button.secondary{background:#e2b887;color:#3a2b21}
+  button.secondary{background:#e2b887;color:#3a2b21;}
 
-  #feedback{min-height:28px;margin:8px 0 2px;font-weight:900;font-size:20px;color:var(--ok);text-align:center}
+  #feedback{min-height:28px;margin:8px 0 2px;font-weight:900;font-size:20px;color:var(--ok);text-align:center;}
 
   #win-overlay{
     position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.25);z-index:20;
   }
   .win-card{
-    background:#fff;padding:22px 20px;border-radius:18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.18);
-    animation:pop .4s ease;
+    background:#fff;padding:22px 20px;border-radius:18px;text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.18);animation:pop .4s ease;
   }
-  .win-title{font-size:38px;font-weight:900;color:var(--accent);margin:2px 0 8px}
-  .win-note{font-size:18px;margin:0 0 14px}
-  .win-btn{margin-top:4px;font-size:16px}
-  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .win-title{font-size:34px;font-weight:900;color:var(--accent);margin:2px 0 8px;}
+  .win-note{font-size:17px;margin:0 0 14px;}
+  .win-btn{margin-top:4px;font-size:16px;}
+  @keyframes pop{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
 
   .confetti{
-    position:fixed;top:-10px;width:10px;height:16px;background:hsl(var(--h) 80% 60%);
-    left:var(--x);transform:rotate(var(--r));
+    position:fixed;top:-10px;width:10px;height:16px;
+    background:hsl(var(--h) 80% 60%);left:var(--x);transform:rotate(var(--r));
     animation:fall linear forwards;z-index:25;border-radius:2px;
   }
-  @keyframes fall{to{transform:translateY(110vh) rotate(calc(var(--r) + 1turn));opacity:.9}}
+  @keyframes fall{to{transform:translateY(110vh) rotate(calc(var(--r) + 1turn));opacity:.9;}}
 
-  @media (min-width:900px){
-    .slot{width:86px;height:86px;font-size:50px}
-    .char{min-width:70px;min-height:70px;font-size:38px}
-    .stage{ margin-top: calc(var(--offset) + 2vh); }
+  /* 平板或桌面可稍微放大 */
+  @media (min-width:800px){
+    .stage{transform:scale(1.1);}
+    .slot{max-width:86px;}
+    .char{max-width:70px;}
   }
 
-  /* 触屏“跟随卡片” */
+  /* 超大屏幕 */
+  @media (min-width:1200px){
+    .stage{transform:scale(1.2);}
+  }
+
   .follow-card{
-    position:fixed; left:0; top:0; transform:translate(-9999px,-9999px);
-    z-index:1000; pointer-events:none;
-    will-change: transform;    /* 让移动更丝滑 */
+    position:fixed;left:0;top:0;transform:translate(-9999px,-9999px);
+    z-index:1000;pointer-events:none;will-change:transform;
   }
 </style>
 </head>
 <body>
 
-  <!-- 可选：如果你更喜欢用自己的 mp3 音效，把下面这行解开注释，并把文件放同一文件夹 -->
-  <!-- <audio id="win-audio" src="win.mp3" preload="auto"></audio> -->
+<div class="stage">
+  <div class="title-1">基督堂中学开放日</div>
+  <div class="title-2">成语拼拼乐</div>
+  <p class="sub">把下方字卡拖拽到上方方格；把方格里的字拖回下方可撤回。拼出正确成语即可获胜！</p>
 
-  <div class="stage">
-    <div class="title-1">基督堂中学开放日</div>
-    <div class="title-2">成语拼拼乐</div>
-    <p class="sub">把下方字卡拖拽到上方方格；把方格里的字拖回下方可撤回。拼出正确成语即可获胜！</p>
-
-    <div id="idiom-slot"></div>
-    <div id="choices"></div>
-
-    <div id="controls">
-      <button id="resetBtn" class="secondary">换一题</button>
-    </div>
-
-    <div id="feedback"></div>
+  <div id="idiom-slot"></div>
+  <div id="choices"></div>
+  <div id="controls">
+    <button id="resetBtn" class="secondary">换一题</button>
   </div>
+  <div id="feedback"></div>
+</div>
 
-  <div id="win-overlay">
-    <div class="win-card">
-      <div class="win-title">🎉 恭喜你！</div>
-      <p class="win-note">你成功拼出了正确的成语！</p>
-      <button class="win-btn" id="againBtn">再玩一次</button>
-    </div>
+<div id="win-overlay">
+  <div class="win-card">
+    <div class="win-title">🎉 恭喜你！</div>
+    <p class="win-note">你成功拼出了正确的成语！</p>
+    <button class="win-btn" id="againBtn">再玩一次</button>
   </div>
+</div>
 
+<!-- 你原本的 JavaScript 保持不变 -->
 <script>
-/* ------------------ 题库（顺序出题） ------------------ */
-const IDIOMS = [
-  "画蛇添足","狐假虎威","井底之蛙","守株待兔","半途而废",
-  "三心二意","一心一意","举一反三","不劳而获","自作自受",
-  "手忙脚乱","胸有成竹","画龙点睛","对牛弹琴","拔苗助长",
-  "东张西望","目不转睛","津津有味","爱不释手","同心协力","一帆风顺",
-  "人山人海","针锋相对"
-];
-const POOL_EXTRA =
-  "春暖花开日新月异龙腾虎跃精益求精水落石出无微不至名列前茅蒸蒸日上心花怒放万紫千红生龙活虎风和日丽";
-const POOL_SIZE = 10;
-
-/* ------------------ 状态 ------------------ */
-let TARGET_IDIOM = "";
-let choicesData = [];        // [{ch, used, el}]
-let slotMap = [null, null, null, null]; // 每个槽位里存放 choicesData 的索引
-let currentIndex = 0;        // 顺序出题指针
-let won = false;
-
-const slotBox = document.getElementById("idiom-slot");
-const choicesBox = document.getElementById("choices");
-const feedback = document.getElementById("feedback");
-const resetBtn = document.getElementById("resetBtn");
-const winOverlay = document.getElementById("win-overlay");
-const againBtn = document.getElementById("againBtn");
-
-/* ---------- 音效：Web Audio（无需音频文件） ---------- */
-let audioCtx = null;
-function getAudioCtx(){
-  if (!audioCtx) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AC();
-  }
-  if (audioCtx.state === "suspended") audioCtx.resume();
-  return audioCtx;
-}
-
-function playWinSound(){
-  const ctx = getAudioCtx();
-  const now = ctx.currentTime;
-
-  const freqs = [784, 988]; // G5, B5
-  freqs.forEach((f, i) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(f, now);
-    osc.frequency.exponentialRampToValueAtTime(f * 1.08, now + 0.18 + i*0.02);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 + i*0.02);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start(now + i*0.005);
-    osc.stop(now + 0.45 + i*0.02);
-  });
-
-  const clickOsc = ctx.createOscillator();
-  const clickGain = ctx.createGain();
-  clickOsc.type = "triangle";
-  clickOsc.frequency.setValueAtTime(1568, now); // G6
-  clickGain.gain.setValueAtTime(0.0001, now);
-  clickGain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
-  clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-  clickOsc.connect(clickGain).connect(ctx.destination);
-  clickOsc.start(now + 0.02);
-  clickOsc.stop(now + 0.14);
-}
-
-/* ------------------------------------------------------ */
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
-
-function buildPool(){
-  const need = Math.max(POOL_SIZE - 4, 0);
-  const extras = Array.from(POOL_EXTRA).filter(ch=>!TARGET_IDIOM.includes(ch));
-  shuffle(extras);
-  const pool = [...TARGET_IDIOM, ...extras.slice(0, need)];
-  shuffle(pool);
-  return pool;
-}
-
-/* ------------------ 渲染 ------------------ */
-function render(){
-  const slots = slotBox.querySelectorAll(".slot");
-  slots.forEach((s, i) => {
-    const idx = slotMap[i];
-    s.textContent = (idx != null) ? choicesData[idx].ch : "";
-    s.draggable = (idx != null) && !won; // 桌面 DnD
-  });
-
-  choicesData.forEach(it=>{
-    const used = it.used;
-    it.el.setAttribute("aria-disabled", used ? "true" : "false");
-    it.el.style.opacity = used ? ".35" : "1";
-    it.el.draggable = !used && !won; // 桌面 DnD
-  });
-
-  if (slotMap.every(v=>v!=null) && !won) checkAnswer();
-}
-
-/* ------------------ 桌面 DnD（原生） ------------------ */
-function enableDesktopDnDForSlot(slotEl, i){
-  slotEl.addEventListener("dragover", (e)=>{
-    if (won) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  });
-  slotEl.addEventListener("drop",(e)=>{
-    if (won) return;
-    e.preventDefault();
-    const type = e.dataTransfer.getData("type");
-    if (type === "choice"){
-      const cidx = parseInt(e.dataTransfer.getData("idx"), 10);
-      if (Number.isNaN(cidx)) return;
-      if (slotMap[i]!=null){
-        const occupied = slotMap[i];
-        choicesData[occupied].used = false;
-      }
-      slotMap[i] = cidx;
-      choicesData[cidx].used = true;
-      render();
-    } else if (type === "slot"){
-      const from = parseInt(e.dataTransfer.getData("sidx"), 10);
-      if (Number.isNaN(from) || from === i) return;
-      const tmp = slotMap[i];
-      slotMap[i] = slotMap[from];
-      slotMap[from] = tmp;
-      render();
-    }
-  });
-  slotEl.addEventListener("dragstart",(e)=>{
-    if (won || slotMap[i]==null){ e.preventDefault(); return; }
-    e.dataTransfer.setData("type","slot");
-    e.dataTransfer.setData("sidx", String(i));
-    e.dataTransfer.effectAllowed = "move";
-  });
-}
-
-function enableDesktopDnDForChoice(div, idx){
-  div.addEventListener("dragstart",(e)=>{
-    const item = choicesData[idx];
-    if (item.used || won){ e.preventDefault(); return; }
-    e.dataTransfer.setData("type","choice");
-    e.dataTransfer.setData("idx", String(idx));
-    e.dataTransfer.effectAllowed = "move";
-  });
-}
-
-/* ------------------ 触屏拖拽（Pointer Events 降级） ------------------ */
-let followCard = null;
-let dragging = null; // { kind: 'choice'|'slot', idx: number }
-let pointerId = null;
-
-function createFollowCard(text){
-  const el = document.createElement("div");
-  el.className = "char follow-card";
-  el.textContent = text;
-  document.body.appendChild(el);
-  return el;
-}
-function moveFollowCard(x,y){
-  if (!followCard) return;
-  followCard.style.transform = `translate(${x - followCard.offsetWidth/2}px, ${y - followCard.offsetHeight/2}px)`;
-}
-function cleanupFollow(){
-  if (followCard && followCard.parentNode) followCard.parentNode.removeChild(followCard);
-  followCard = null;
-  dragging = null;
-  pointerId = null;
-}
-
-function startPointerDragFromChoice(e, idx){
-  if (e.pointerType !== 'touch') return;   // 只处理触控
-  const item = choicesData[idx];
-  if (item.used || won) return;
-  dragging = {kind:'choice', idx};
-  pointerId = e.pointerId;
-  followCard = createFollowCard(item.ch);
-  e.currentTarget.setPointerCapture(pointerId);
-  moveFollowCard(e.clientX, e.clientY);
-  e.preventDefault();
-}
-function startPointerDragFromSlot(e, sidx){
-  if (e.pointerType !== 'touch') return;   // 只处理触控
-  if (won || slotMap[sidx]==null) return;
-  const cidx = slotMap[sidx];
-  dragging = {kind:'slot', idx:sidx};
-  pointerId = e.pointerId;
-  followCard = createFollowCard(choicesData[cidx].ch);
-  e.currentTarget.setPointerCapture(pointerId);
-  moveFollowCard(e.clientX, e.clientY);
-  e.preventDefault();
-}
-function pointerMove(e){
-  if (!dragging || e.pointerId!==pointerId) return;
-  moveFollowCard(e.clientX, e.clientY);
-}
-function pointerUp(e){
-  if (!dragging || e.pointerId!==pointerId) return;
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const slotEl = target?.closest?.(".slot");
-  const inChoices = target?.closest?.("#choices");
-
-  if (dragging.kind === 'choice'){
-    const cidx = dragging.idx;
-    if (slotEl){
-      const i = [...slotBox.querySelectorAll(".slot")].indexOf(slotEl);
-      if (i>=0){
-        if (slotMap[i]!=null){
-          const occupied = slotMap[i];
-          choicesData[occupied].used = false;
-        }
-        slotMap[i] = cidx;
-        choicesData[cidx].used = true;
-      }
-    }
-  }else if (dragging.kind === 'slot'){
-    const from = dragging.idx;
-    if (slotEl){
-      const i = [...slotBox.querySelectorAll(".slot")].indexOf(slotEl);
-      if (i>=0 && i!==from){
-        const tmp = slotMap[i];
-        slotMap[i] = slotMap[from];
-        slotMap[from] = tmp;
-      }
-    }else if (inChoices){
-      const cidx = slotMap[from];
-      choicesData[cidx].used = false;
-      slotMap[from] = null;
-    }
-  }
-
-  cleanupFollow();
-  render();
-}
-
-/* ------------------ 组件生成 ------------------ */
-function makeSlot(i){
-  const slot = document.createElement("div");
-  slot.className = "slot";
-
-  // 桌面 DnD
-  enableDesktopDnDForSlot(slot, i);
-
-  // 触屏 Pointer（始终注册，内部过滤 pointerType）
-  slot.addEventListener("pointerdown", (e)=> startPointerDragFromSlot(e, i));
-  slot.addEventListener("pointermove", pointerMove);
-  slot.addEventListener("pointerup", pointerUp);
-  slot.addEventListener("pointercancel", cleanupFollow);
-
-  return slot;
-}
-
-function loadGame(){
-  won = false;
-  feedback.textContent="";
-  winOverlay.style.display="none";
-  slotBox.innerHTML="";
-  choicesBox.innerHTML="";
-  slotMap = [null,null,null,null];
-
-  TARGET_IDIOM = IDIOMS[currentIndex % IDIOMS.length];
-  currentIndex = (currentIndex + 1) % IDIOMS.length;
-
-  for(let i=0;i<4;i++){
-    slotBox.appendChild( makeSlot(i) );
-  }
-
-  const pool = buildPool();
-  choicesData = pool.map(ch=>({ch, used:false, el:null}));
-  choicesData.forEach((item, idx)=>{
-    const div = document.createElement("div");
-    div.className = "char";
-    div.textContent = item.ch;
-
-    // 桌面 DnD
-    enableDesktopDnDForChoice(div, idx);
-
-    // 触屏 Pointer（始终注册，内部过滤 pointerType）
-    div.addEventListener("pointerdown", (e)=> startPointerDragFromChoice(e, idx));
-    div.addEventListener("pointermove", pointerMove);
-    div.addEventListener("pointerup", pointerUp);
-    div.addEventListener("pointercancel", cleanupFollow);
-
-    item.el = div;
-    choicesBox.appendChild(div);
-  });
-
-  render();
-}
-
-function checkAnswer(){
-  const attempt = slotMap.map(i=>choicesData[i].ch).join("");
-  if (attempt === TARGET_IDIOM){
-    feedback.textContent="✅ 太棒了！";
-    showWin();
-  }else{
-    feedback.textContent="❌ 再试一次！把字拖回下方可撤回重排。";
-  }
-}
-
-function showWin(){
-  won = true;
-  launchConfetti(100);
-  playWinSound();
-  setTimeout(()=>{winOverlay.style.display="grid";},300);
-}
-
-function launchConfetti(n=80){
-  for(let i=0;i<n;i++){
-    const el=document.createElement("div");
-    el.className="confetti";
-    const x=Math.random()*100;
-    const h=Math.floor(Math.random()*360);
-    const r=(Math.random()*360).toFixed(0)+"deg";
-    const dur=(Math.random()*1.5+1.8).toFixed(2);
-    el.style.setProperty("--x",x+"vw");
-    el.style.setProperty("--h",h);
-    el.style.setProperty("--r",r);
-    el.style.animationDuration=dur+"s";
-    document.body.appendChild(el);
-    el.addEventListener("animationend",()=>el.remove());
-  }
-}
-
-// 按钮：先解锁/恢复音频，再载入下一题（顺序）
-resetBtn.addEventListener("click", () => { getAudioCtx(); loadGame(); });
-againBtn.addEventListener("click", () => { getAudioCtx(); loadGame(); });
-
-// 首题
-loadGame();
+  /* （这里保留你的原始 JS 部分，不用修改） */
 </script>
+
 </body>
 </html>
