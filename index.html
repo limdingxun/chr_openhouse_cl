@@ -2,145 +2,411 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>基督堂中学开放日｜成语拼拼乐</title>
 <style>
   :root{
-    --bg:#faf4e1;
-    --ink:#3b2f2a;
-    --accent:#c95b16;
-    --chip:#ffe0b2;
-    --chip-border:#f4c48e;
-    --slot:#ffffff;
-    --ok:#2e7d32;
-    --offset: 8vh; /* 控制整体上下位置 */
+    --bg:#faf4e1; --ink:#3b2f2a; --accent:#c95b16;
+    --chip:#ffe0b2; --chip-border:#f4c48e; --slot:#ffffff; --ok:#2e7d32;
+    --offset: 6vh;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family:"Noto Sans SC", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
     display:flex; flex-direction:column; align-items:center;
-    padding:2vh 4vw;
-    overflow-x:hidden;   /* 避免水平滚动 */
+    padding:18px 12px;
+    /* 兼容：先用 100vh，再用 100svh（新 iOS 更准确） */
+    min-height:100vh;
+    min-height:100svh;
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+    padding-top:max(18px, env(safe-area-inset-top));
+    padding-bottom:max(18px, env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
   }
 
   .stage{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    width:min(100%, 1000px);
+    display:flex; flex-direction:column; align-items:center;
     margin-top: var(--offset);
-    transform-origin: top center;
+    transform: scale(1); transform-origin: top center;
+    padding-bottom: 2vh;
   }
 
-  .title-1{font-size:clamp(22px,5vw,36px);font-weight:900;margin:2px 0;color:#2f3e46}
-  .title-2{font-size:clamp(20px,4.4vw,30px);font-weight:800;margin:4px 0 8px;color:var(--accent)}
-  .sub{font-size:clamp(14px,2.8vw,18px);opacity:.9;margin:2px 0 12px;text-align:center;}
+  .title-1{font-size: clamp(20px, 5vw, 36px); font-weight:900; margin:2px 0; color:#2f3e46}
+  .title-2{font-size: clamp(18px, 4.4vw, 30px); font-weight:800; margin:4px 0 8px; color:var(--accent)}
+  .sub{font-size: clamp(14px, 3.2vw, 18px); opacity:.9; margin:2px 0 12px; text-align:center; padding:0 8px}
 
   #idiom-slot{
-    display:flex;justify-content:center;gap:3vw;margin:8px 0 6px;
-    min-height:12vw;flex-wrap:wrap;
+    display:flex; justify-content:center;
+    gap:clamp(6px, 2.4vw, 14px);
+    margin:8px 0 6px;
+    min-height:clamp(56px, 14vw, 86px);
   }
   .slot{
-    width:18vw;max-width:80px;aspect-ratio:1;
-    background:var(--slot);border:3px dashed #b7b7b7;border-radius:16px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:clamp(28px,7vw,46px);font-weight:800;user-select:none;
+    width:clamp(56px, 14vw, 86px);
+    height:clamp(56px, 14vw, 86px);
+    background:var(--slot);
+    border:3px dashed #b7b7b7; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:clamp(34px, 8vw, 50px); font-weight:800; user-select:none;
     box-shadow:0 1px 0 rgba(0,0,0,.04);
-    cursor:pointer;
-    touch-action:none;
+    cursor:pointer; touch-action:none;
   }
 
   #choices{
-    display:flex;flex-wrap:wrap;justify-content:center;
-    gap:3vw;margin:14px auto;max-width:95vw;
+    display:flex; flex-wrap:wrap; justify-content:center;
+    gap:clamp(6px, 2vw, 10px);
+    margin:14px auto; width:100%; max-width:1000px;
   }
   .char{
-    min-width:15vw;max-width:70px;aspect-ratio:1;
-    font-size:clamp(24px,6vw,38px);font-weight:800;
-    background:var(--chip);border:2px solid var(--chip-border);
-    border-radius:14px;display:inline-flex;align-items:center;justify-content:center;
-    user-select:none;transition:transform .06s ease;cursor:grab;
-    -webkit-user-drag:element;
-    touch-action:none;
+    min-width:clamp(48px, 12vw, 70px);
+    min-height:clamp(48px, 12vw, 70px);
+    padding:clamp(6px, 1.8vw, 12px) clamp(10px, 2.4vw, 16px);
+    font-size:clamp(26px, 7vw, 38px);
+    font-weight:800; background:var(--chip); border:2px solid var(--chip-border);
+    border-radius:14px; display:inline-flex; align-items:center; justify-content:center;
+    user-select:none; transition:transform .06s ease; cursor:grab;
+    -webkit-user-drag: element; touch-action:none;
   }
-  .char:active{transform:scale(.96);}
-  .char[aria-disabled="true"]{opacity:.35;cursor:not-allowed;}
+  .char:active{transform:scale(.96)}
+  .char[aria-disabled="true"]{opacity:.35;cursor:not-allowed}
 
-  #controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 2px;}
+  #controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 2px}
   button{
-    appearance:none;border:0;border-radius:12px;padding:10px 14px;
-    font-size:16px;font-weight:800;cursor:pointer;
+    appearance:none;border:0;border-radius:12px;padding:12px 16px;font-size:16px;font-weight:800;cursor:pointer;
     background:var(--accent);color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.08);
   }
-  button.secondary{background:#e2b887;color:#3a2b21;}
+  button.secondary{background:#e2b887;color:#3a2b21}
 
-  #feedback{min-height:28px;margin:8px 0 2px;font-weight:900;font-size:20px;color:var(--ok);text-align:center;}
+  #feedback{min-height:28px;margin:8px 0 2px;font-weight:900;font-size:clamp(16px, 4.2vw, 20px);color:var(--ok);text-align:center}
 
-  #win-overlay{
-    position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.25);z-index:20;
-  }
+  #win-overlay{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.25);z-index:20}
   .win-card{
-    background:#fff;padding:22px 20px;border-radius:18px;text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.18);animation:pop .4s ease;
+    background:#fff;padding:22px 20px;border-radius:18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.18);
+    animation:pop .4s ease; max-width:min(92vw, 420px);
   }
-  .win-title{font-size:34px;font-weight:900;color:var(--accent);margin:2px 0 8px;}
-  .win-note{font-size:17px;margin:0 0 14px;}
-  .win-btn{margin-top:4px;font-size:16px;}
-  @keyframes pop{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .win-title{font-size:clamp(24px, 7vw, 38px);font-weight:900;color:var(--accent);margin:2px 0 8px}
+  .win-note{font-size:clamp(14px, 4.2vw, 18px);margin:0 0 14px}
+  .win-btn{margin-top:4px;font-size:16px}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 
   .confetti{
-    position:fixed;top:-10px;width:10px;height:16px;
-    background:hsl(var(--h) 80% 60%);left:var(--x);transform:rotate(var(--r));
-    animation:fall linear forwards;z-index:25;border-radius:2px;
+    position:fixed;top:-10px;width:10px;height:16px;background:hsl(var(--h) 80% 60%);
+    left:var(--x);transform:rotate(var(--r));animation:fall linear forwards;z-index:25;border-radius:2px;
   }
-  @keyframes fall{to{transform:translateY(110vh) rotate(calc(var(--r) + 1turn));opacity:.9;}}
+  @keyframes fall{to{transform:translateY(110vh) rotate(calc(var(--r) + 1turn));opacity:.9}}
 
-  /* 平板或桌面可稍微放大 */
-  @media (min-width:800px){
-    .stage{transform:scale(1.1);}
-    .slot{max-width:86px;}
-    .char{max-width:70px;}
-  }
+  .follow-card{position:fixed;left:0;top:0;transform:translate(-9999px,-9999px);z-index:1000;pointer-events:none;will-change:transform}
 
-  /* 超大屏幕 */
-  @media (min-width:1200px){
-    .stage{transform:scale(1.2);}
-  }
-
-  .follow-card{
-    position:fixed;left:0;top:0;transform:translate(-9999px,-9999px);
-    z-index:1000;pointer-events:none;will-change:transform;
-  }
+  @media (min-width:900px){ .stage{ transform: scale(1.08); margin-top: calc(var(--offset) + 2vh);} }
+  @media (min-width:1200px){ .stage{ transform: scale(1.18);} }
 </style>
 </head>
 <body>
 
-<div class="stage">
-  <div class="title-1">基督堂中学开放日</div>
-  <div class="title-2">成语拼拼乐</div>
-  <p class="sub">把下方字卡拖拽到上方方格；把方格里的字拖回下方可撤回。拼出正确成语即可获胜！</p>
+  <div class="stage">
+    <div class="title-1">基督堂中学开放日</div>
+    <div class="title-2">成语拼拼乐</div>
+    <p class="sub">把下方字卡拖拽到上方方格；把方格里的字拖回下方可撤回。拼出正确成语即可获胜！</p>
 
-  <div id="idiom-slot"></div>
-  <div id="choices"></div>
-  <div id="controls">
-    <button id="resetBtn" class="secondary">换一题</button>
+    <div id="idiom-slot"></div>
+    <div id="choices"></div>
+
+    <div id="controls">
+      <button id="resetBtn" class="secondary">换一题</button>
+    </div>
+
+    <div id="feedback"></div>
   </div>
-  <div id="feedback"></div>
-</div>
 
-<div id="win-overlay">
-  <div class="win-card">
-    <div class="win-title">🎉 恭喜你！</div>
-    <p class="win-note">你成功拼出了正确的成语！</p>
-    <button class="win-btn" id="againBtn">再玩一次</button>
+  <div id="win-overlay">
+    <div class="win-card">
+      <div class="win-title">🎉 恭喜你！</div>
+      <p class="win-note">你成功拼出了正确的成语！</p>
+      <button class="win-btn" id="againBtn">再玩一次</button>
+    </div>
   </div>
-</div>
 
-<!-- 你原本的 JavaScript 保持不变 -->
 <script>
-  /* （这里保留你的原始 JS 部分，不用修改） */
-</script>
+/* ------------------ 题库（顺序出题） ------------------ */
+var IDIOMS = [
+  "画蛇添足","狐假虎威","井底之蛙","守株待兔","半途而废",
+  "三心二意","一心一意","举一反三","不劳而获","自作自受",
+  "手忙脚乱","胸有成竹","画龙点睛","对牛弹琴","拔苗助长",
+  "东张西望","目不转睛","津津有味","爱不释手","同心协力","一帆风顺",
+  "人山人海","针锋相对"
+];
+var POOL_EXTRA = "春暖花开日新月异龙腾虎跃精益求精水落石出无微不至名列前茅蒸蒸日上心花怒放万紫千红生龙活虎风和日丽";
+var POOL_SIZE = 10;
 
+/* ------------------ 状态 ------------------ */
+var TARGET_IDIOM = "";
+var choicesData = [];        // [{ch, used, el}]
+var slotMap = [null, null, null, null];
+var currentIndex = 0;
+var won = false;
+
+var slotBox = document.getElementById("idiom-slot");
+var choicesBox = document.getElementById("choices");
+var feedback = document.getElementById("feedback");
+var resetBtn = document.getElementById("resetBtn");
+var winOverlay = document.getElementById("win-overlay");
+var againBtn = document.getElementById("againBtn");
+
+/* ---------- 音效：Web Audio（无需音频文件） ---------- */
+var audioCtx = null;
+function getAudioCtx(){
+  if (!audioCtx) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === "suspended" && audioCtx.resume) audioCtx.resume();
+  return audioCtx;
+}
+function playWinSound(){
+  try{
+    var ctx = getAudioCtx();
+    var now = ctx.currentTime;
+    var freqs = [784, 988]; // G5, B5
+    freqs.forEach(function(f, i){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(f, now);
+      osc.frequency.exponentialRampToValueAtTime(f * 1.08, now + 0.18 + i*0.02);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 + i*0.02);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(now + i*0.005);
+      osc.stop(now + 0.45 + i*0.02);
+    });
+    var clickOsc = ctx.createOscillator();
+    var clickGain = ctx.createGain();
+    clickOsc.type = "triangle";
+    clickOsc.frequency.setValueAtTime(1568, now);
+    clickGain.gain.setValueAtTime(0.0001, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.25, now + 0.01);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    clickOsc.connect(clickGain).connect(ctx.destination);
+    clickOsc.start(now + 0.02);
+    clickOsc.stop(now + 0.14);
+  }catch(e){ /* 老设备无音频也不阻断游戏 */ }
+}
+
+/* ------------------------------------------------------ */
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}}
+function buildPool(){
+  var need = Math.max(POOL_SIZE - 4, 0);
+  var extras = Array.from(POOL_EXTRA).filter(function(ch){ return TARGET_IDIOM.indexOf(ch) === -1; });
+  shuffle(extras);
+  var pool = TARGET_IDIOM.split("").concat(extras.slice(0, need));
+  shuffle(pool);
+  return pool;
+}
+
+/* ------------------ 渲染 ------------------ */
+function render(){
+  var slots = slotBox.querySelectorAll(".slot");
+  Array.from(slots).forEach(function(s, i){
+    var idx = slotMap[i];
+    s.textContent = (idx != null) ? choicesData[idx].ch : "";
+    s.draggable = (idx != null) && !won;
+  });
+  choicesData.forEach(function(it){
+    var used = it.used;
+    it.el.setAttribute("aria-disabled", used ? "true" : "false");
+    it.el.style.opacity = used ? ".35" : "1";
+    it.el.draggable = !used && !won;
+  });
+  if (slotMap.every(function(v){return v!=null;}) && !won) checkAnswer();
+}
+
+/* ------------------ 桌面 DnD ------------------ */
+function enableDesktopDnDForSlot(slotEl, i){
+  slotEl.addEventListener("dragover", function(e){
+    if (won) return; e.preventDefault(); e.dataTransfer.dropEffect = "move";
+  });
+  slotEl.addEventListener("drop", function(e){
+    if (won) return; e.preventDefault();
+    var type = e.dataTransfer.getData("type");
+    if (type === "choice"){
+      var cidx = parseInt(e.dataTransfer.getData("idx"), 10);
+      if (isNaN(cidx)) return;
+      if (slotMap[i]!=null){ var occupied = slotMap[i]; choicesData[occupied].used = false; }
+      slotMap[i] = cidx; choicesData[cidx].used = true; render();
+    } else if (type === "slot"){
+      var from = parseInt(e.dataTransfer.getData("sidx"), 10);
+      if (isNaN(from) || from === i) return;
+      var tmp = slotMap[i]; slotMap[i] = slotMap[from]; slotMap[from] = tmp; render();
+    }
+  });
+  slotEl.addEventListener("dragstart", function(e){
+    if (won || slotMap[i]==null){ e.preventDefault(); return; }
+    e.dataTransfer.setData("type","slot"); e.dataTransfer.setData("sidx", String(i)); e.dataTransfer.effectAllowed = "move";
+  });
+}
+function enableDesktopDnDForChoice(div, idx){
+  div.addEventListener("dragstart", function(e){
+    var item = choicesData[idx];
+    if (item.used || won){ e.preventDefault(); return; }
+    e.dataTransfer.setData("type","choice"); e.dataTransfer.setData("idx", String(idx)); e.dataTransfer.effectAllowed = "move";
+  });
+}
+
+/* ------------------ 触屏拖拽（兼容 touch/pen） ------------------ */
+var followCard = null;
+var dragging = null; // { kind: 'choice'|'slot', idx: number }
+var pointerId = null;
+
+function createFollowCard(text){
+  var el = document.createElement("div");
+  el.className = "char follow-card";
+  el.textContent = text;
+  document.body.appendChild(el);
+  return el;
+}
+function moveFollowCard(x,y){
+  if (!followCard) return;
+  followCard.style.transform = "translate("+(x - followCard.offsetWidth/2)+"px,"+(y - followCard.offsetHeight/2)+"px)";
+}
+function cleanupFollow(){
+  if (followCard && followCard.parentNode) followCard.parentNode.removeChild(followCard);
+  followCard = null; dragging = null; pointerId = null;
+}
+function isTouchLike(e){ return e.pointerType === 'touch' || e.pointerType === 'pen'; }
+
+function startPointerDragFromChoice(e, idx){
+  if (!isTouchLike(e)) return;
+  var item = choicesData[idx]; if (item.used || won) return;
+  dragging = {kind:'choice', idx:idx}; pointerId = e.pointerId;
+  followCard = createFollowCard(item.ch);
+  if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(pointerId);
+  moveFollowCard(e.clientX, e.clientY); e.preventDefault();
+}
+function startPointerDragFromSlot(e, sidx){
+  if (!isTouchLike(e)) return;
+  if (won || slotMap[sidx]==null) return;
+  var cidx = slotMap[sidx];
+  dragging = {kind:'slot', idx:sidx}; pointerId = e.pointerId;
+  followCard = createFollowCard(choicesData[cidx].ch);
+  if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(pointerId);
+  moveFollowCard(e.clientX, e.clientY); e.preventDefault();
+}
+function pointerMove(e){
+  if (!dragging || e.pointerId!==pointerId) return; moveFollowCard(e.clientX, e.clientY);
+}
+function pointerUp(e){
+  if (!dragging || e.pointerId!==pointerId) return;
+  var target = document.elementFromPoint(e.clientX, e.clientY);
+  // 不用可选链，老 Safari 也能跑
+  var slotEl = null, inChoices = false;
+  if (target){
+    // 逐级向上找 .slot
+    var t = target;
+    while (t && t !== document && t.nodeType === 1){
+      if (t.classList && t.classList.contains("slot")) { slotEl = t; break; }
+      t = t.parentNode;
+    }
+    // 判断是否在 #choices 内
+    var p = target;
+    while (p && p !== document && p.nodeType === 1){
+      if (p.id === "choices") { inChoices = true; break; }
+      p = p.parentNode;
+    }
+  }
+
+  if (dragging.kind === 'choice'){
+    var cidx = dragging.idx;
+    if (slotEl){
+      var slots = Array.from(slotBox.querySelectorAll(".slot"));
+      var i = slots.indexOf(slotEl);
+      if (i>=0){
+        if (slotMap[i]!=null){ var occupied = slotMap[i]; choicesData[occupied].used = false; }
+        slotMap[i] = cidx; choicesData[cidx].used = true;
+      }
+    }
+  }else if (dragging.kind === 'slot'){
+    var from = dragging.idx;
+    if (slotEl){
+      var slots2 = Array.from(slotBox.querySelectorAll(".slot"));
+      var i2 = slots2.indexOf(slotEl);
+      if (i2>=0 && i2!==from){
+        var tmp = slotMap[i2]; slotMap[i2] = slotMap[from]; slotMap[from] = tmp;
+      }
+    }else if (inChoices){
+      var cidx2 = slotMap[from]; choicesData[cidx2].used = false; slotMap[from] = null;
+    }
+  }
+  cleanupFollow(); render();
+}
+
+/* ------------------ 组件生成 ------------------ */
+function makeSlot(i){
+  var slot = document.createElement("div");
+  slot.className = "slot";
+  enableDesktopDnDForSlot(slot, i);
+  slot.addEventListener("pointerdown", function(e){ startPointerDragFromSlot(e, i); });
+  slot.addEventListener("pointermove", pointerMove);
+  slot.addEventListener("pointerup", pointerUp);
+  slot.addEventListener("pointercancel", cleanupFollow);
+  return slot;
+}
+
+function loadGame(){
+  won = false; feedback.textContent="";
+  winOverlay.style.display="none";
+  slotBox.innerHTML=""; choicesBox.innerHTML="";
+  slotMap = [null,null,null,null];
+
+  TARGET_IDIOM = IDIOMS[currentIndex % IDIOMS.length];
+  currentIndex = (currentIndex + 1) % IDIOMS.length;
+
+  for(var i=0;i<4;i++){ slotBox.appendChild( makeSlot(i) ); }
+
+  var pool = buildPool();
+  choicesData = pool.map(function(ch){return {ch:ch, used:false, el:null};});
+  choicesData.forEach(function(item, idx){
+    var div = document.createElement("div");
+    div.className = "char"; div.textContent = item.ch;
+    enableDesktopDnDForChoice(div, idx);
+    div.addEventListener("pointerdown", function(e){ startPointerDragFromChoice(e, idx); });
+    div.addEventListener("pointermove", pointerMove);
+    div.addEventListener("pointerup", pointerUp);
+    div.addEventListener("pointercancel", cleanupFollow);
+    item.el = div; choicesBox.appendChild(div);
+  });
+
+  render();
+}
+
+function checkAnswer(){
+  var attempt = slotMap.map(function(i){return choicesData[i].ch;}).join("");
+  if (attempt === TARGET_IDIOM){
+    feedback.textContent="✅ 太棒了！"; showWin();
+  }else{
+    feedback.textContent="❌ 再试一次！把字拖回下方可撤回重排。";
+  }
+}
+function showWin(){ won = true; launchConfetti(100); playWinSound(); setTimeout(function(){winOverlay.style.display="grid";},300); }
+function launchConfetti(n){
+  n = n||80;
+  for(var i=0;i<n;i++){
+    var el=document.createElement("div"); el.className="confetti";
+    var x=Math.random()*100, h=Math.floor(Math.random()*360), r=(Math.random()*360).toFixed(0)+"deg", dur=(Math.random()*1.5+1.8).toFixed(2);
+    el.style.setProperty("--x",x+"vw"); el.style.setProperty("--h",h); el.style.setProperty("--r",r); el.style.animationDuration=dur+"s";
+    document.body.appendChild(el); el.addEventListener("animationend",function(){ this.remove(); });
+  }
+}
+
+resetBtn.addEventListener("click", function(){ getAudioCtx(); loadGame(); });
+againBtn.addEventListener("click", function(){ getAudioCtx(); loadGame(); });
+
+/* 首题 */
+loadGame();
+</script>
 </body>
 </html>
